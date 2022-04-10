@@ -1,4 +1,5 @@
 //jshint esversion:6
+require('dotenv').config();
 const express = require('express');
 const ejs = require('ejs');
 const mongoose = require('mongoose');
@@ -12,6 +13,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
+// getting the value of the dotenv file
+console.log(process.env.API_KEY);
+
 // connecting the mongoose DB
 mongoose.connect("mongodb://localhost:27017/userDB");
 
@@ -21,8 +25,7 @@ const userSchema = new mongoose.Schema({
     password: String
 });
 
-const secret = "This is my little secret.";
-userSchema.plugin(encrypt, {secret : secret, encryptedFields: ["password"]});
+userSchema.plugin(encrypt, {secret : process.env.SECRET, encryptedFields: ["password"]});
 
 // creating the Model
 const User = mongoose.model("user", userSchema);
